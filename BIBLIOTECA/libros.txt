@@ -1,0 +1,4 @@
+id,título,autor,editorial,año de publicación
+1,El infinito en un junco,1,Siruela,2022
+2,Poeta en Nueva York,2,Séneca,1940
+3,El silbido del arquero,1,Contraseña editorial,2015
