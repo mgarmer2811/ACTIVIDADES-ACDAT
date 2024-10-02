@@ -47,8 +47,17 @@ public class Main {
                     Shop.deleteProduct(productIdD);
                     break;
                 case 4:
+                    System.out.println("");
+                    System.out.println("Introduzca el id del producto que desea comproba");
+                    int productIdC = scanner.nextInt();
+                    Shop.checkProduct(productIdC);
+                    break;
                 case 5:
                     Shop.listProducts();
+                    break;
+                case 6:
+                    System.out.println("Has salido del programa");
+                    break;
             }
         }
         while(option != 6);

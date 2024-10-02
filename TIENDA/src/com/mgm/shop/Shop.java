@@ -75,6 +75,7 @@ public class Shop {
         System.out.println("Introduce el nombre del producto");
         name = scanner.nextLine();
         System.out.println("Introduce el precio del producto");
+        scanner.nextLine();
         price = scanner.nextFloat();
         System.out.println("Introduce el stock del producto");
         stock = scanner.nextInt();
@@ -172,7 +173,6 @@ public class Shop {
                     System.out.println("");
                     System.out.println("Introduzca el nuevo precio del producto");
                     Float newPrice = scanner.nextFloat();
-                    scanner.nextLine();
                     
                     products.get(index).setPriceProduct(newPrice);
                     FileOutputStream fout = null;
