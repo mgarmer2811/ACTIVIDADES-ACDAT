@@ -164,7 +164,7 @@ public class Banco {
         }
     }
     
-    public static void withdrawMoney() {
+    public static void withdrawMoney() throws SaldoInsuficienteException {
         Scanner scanner = new Scanner(System.in);
         String userInput;
         
@@ -201,6 +201,9 @@ public class Banco {
 
                     System.out.println("");
                     System.out.println("Se ha retirado correctamente el saldo, Saldo actual de la cuenta: " + newActualMoney);
+                }
+                else{
+                    throw new SaldoInsuficienteException("No hay suficiente saldo en tu cuenta, no puedes retirar tanto dinero");
                 }
                 
             }
