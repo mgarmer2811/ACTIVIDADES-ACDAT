@@ -74,13 +74,18 @@ public class Main {
             }
             case 6:
             {
-                Banco.withdrawMoney();
+                try{
+                    Banco.withdrawMoney();
+                }
+                catch(SaldoInsuficienteException sie){}
                 break;
             }
             case 7:
             {
-                Banco.withdrawMoney();
-                break;
+                try{
+                    Banco.withdrawMoney();
+                }
+                catch(SaldoInsuficienteException sie){}
             }
             case 8:
             {
