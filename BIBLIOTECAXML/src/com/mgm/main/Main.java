@@ -32,8 +32,10 @@ public class Main {
 //        Biblioteca.addLibro(libro2);
 //        Biblioteca.addLibro(libro3);
 
-        Biblioteca.loadAutores();
-        Biblioteca.loadLibros();
+//          Biblioteca.loadAutores();
+//          Biblioteca.loadLibros();
+        Biblioteca.loadAutoresXML();
+        Biblioteca.loadLibrosXML();
         
         do{
 //            System.out.println("1. Mostrar todos los libros");
@@ -71,8 +73,9 @@ public class Main {
                     System.out.println("Introduce el/los apellido(s) del autor");
                     apellidosAutor = scanner.nextLine();
                     Autor autor = new Autor(idAutor,nombreAutor,apellidosAutor);
-                    Biblioteca.addAutor(autor);
-                    Biblioteca.storeAutor(autor);
+//                      Biblioteca.addAutor(autor);
+//                      Biblioteca.storeAutor(autor);
+                    Biblioteca.storeAutorXML(autor);
                     System.out.println("");
                     break;
                 case 2:
@@ -108,8 +111,9 @@ public class Main {
                     System.out.println("Introduce el anyo de publicacion del libro");
                     anyoLibro = scanner.nextInt();
                     Libro libro = new Libro(idLibro,tituloLibro,autor2,editorialLibro,anyoLibro);
-                    Biblioteca.addLibro(libro);
-                    Biblioteca.storeLibro(libro);
+//                      Biblioteca.addLibro(libro);
+//                      Biblioteca.storeLibro(libro);
+                    Biblioteca.storeLibroXML(libro);
                     System.out.println("");
                     break;
                 case 3:

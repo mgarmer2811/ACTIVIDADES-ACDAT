@@ -4,11 +4,13 @@
  */
 package com.mgm.bibliotecaXML;
 
+import java.io.Serializable;
+
 /**
  *
  * @author MGM
  */
-public class Autor {
+public class Autor implements Serializable{
     private int idAutor;
     private String nombreAutor;
     private String apellidosAutor;

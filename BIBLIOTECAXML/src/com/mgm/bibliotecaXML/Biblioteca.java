@@ -238,6 +238,11 @@ public class Biblioteca {
                 catch(Exception ie){
                     System.err.println("Ha habido un error añadiendo el autor al fichero XML");
                 }
+                finally{
+                    if(encoder != null){
+                        encoder.close();
+                    }
+                }
             }
         }
         catch(Exception e){
@@ -246,6 +251,27 @@ public class Biblioteca {
     }
     
     public static void storeLibroXML(Libro libro) {
-        
+        XMLEncoder encoder = null;
+        addLibro(libro);
+        try{
+            encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("libros.xml")));
+            
+            for(Libro libro1 : libros){
+                try{
+                    encoder.writeObject(libro1);
+                }
+                catch(Exception ie){
+                    System.err.println("Ha habido un error añadiendo el libro al fichero XML");
+                }
+                finally{
+                    if(encoder != null){
+                        encoder.close();
+                    }
+                }
+            }
+        }
+        catch(Exception e){
+            System.err.println("Ha habido un error escribiendo en el fichero XML");
+        }
     }
 }

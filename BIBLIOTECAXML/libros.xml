@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="21.0.4" class="java.beans.XMLDecoder">
+ <object class="com.mgm.bibliotecaXML.Libro">
+  <void property="anyoLibro">
+   <int>2024</int>
+  </void>
+  <void property="autorLibro">
+   <object class="com.mgm.bibliotecaXML.Autor">
+    <void property="apellidosAutor">
+     <string>navarro</string>
+    </void>
+    <void property="idAutor">
+     <int>1</int>
+    </void>
+    <void property="nombreAutor">
+     <string>pepino</string>
+    </void>
+   </object>
+  </void>
+  <void property="editorialLibro">
+   <string>realNoFake</string>
+  </void>
+  <void property="idLibro">
+   <int>1</int>
+  </void>
+  <void property="tituloLibro">
+   <string>las aventuras de paquito</string>
+  </void>
+ </object>
+</java>
