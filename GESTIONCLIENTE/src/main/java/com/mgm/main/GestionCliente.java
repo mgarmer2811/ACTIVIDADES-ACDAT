@@ -76,7 +76,12 @@ public class GestionCliente {
                                String email = scanner.nextLine();
                                if(containsIgnoreCase(emails,email)){
                                    String queryUpdate = "UPDATE cliente SET nombre = '" + nombre + "' WHERE email = '" + email + "'";
-                                   
+                                   try{
+                                       conexion.ejecutar(queryUpdate);
+                                   }
+                                   catch(SQLException sqle){
+                                       System.err.println("Ha surgido un error al actualizar el nombre del cliente");
+                                   }
                                }
                                else{
                                    System.out.println("No se ha encontado el cliente que se quiere modificar");
@@ -89,7 +94,13 @@ public class GestionCliente {
                                System.out.println("Introduce el email del cliente que desea modificar");
                                String email = scanner.nextLine();
                                if(containsIgnoreCase(emails,email)){
-                                   
+                                   String queryUpdate = "UPDATE cliente SET ciudad = '" + ciudad + "' WHERE email = '" + email + "'";
+                                   try{
+                                       conexion.ejecutar(queryUpdate);
+                                   }
+                                   catch(SQLException sqle){
+                                       System.err.println("Ha surgido un error al actualizar el nombre del cliente");
+                                   }
                                }
                                else{
                                    System.out.println("No se ha encontado el cliente que se quiere modificar");
@@ -97,12 +108,18 @@ public class GestionCliente {
                                break;
                            }
                            case 3:{
-                               System.out.println("Introduce el nuevo email del cliente");
+                               System.out.println("Introduce el nuevo telefono del cliente");
                                String telefono = scanner.nextLine();
                                System.out.println("Introduce el email del cliente que desea modificar");
                                String email = scanner.nextLine();
                                if(containsIgnoreCase(emails,email)){
-                                   
+                                   String queryUpdate = "UPDATE cliente SET email = '" + telefono + "' WHERE email = '" + email + "'";
+                                   try{
+                                       conexion.ejecutar(queryUpdate);
+                                   }
+                                   catch(SQLException sqle){
+                                       System.err.println("Ha surgido un error al actualizar el nombre del cliente");
+                                   }
                                }
                                else{
                                    System.out.println("No se ha encontado el cliente que se quiere modificar");
@@ -127,6 +144,12 @@ public class GestionCliente {
            }
            
         }while(opcion != 6);
+        try{
+            conexion.cerrarConexion();
+        }
+        catch(SQLException sqle){
+            System.err.println("Se ha producido un error al cerrar la conexion");
+        }
     }
     
     public static void listarClientes(Conexion conn) {
@@ -183,40 +206,32 @@ public class GestionCliente {
     public static void buscarPorEmail(Conexion conn, String email) {
         String query = "SELECT * FROM cliente;";
         ResultSet rs;
-        String nombre = "", emailString = "", ciudad = "", telefono = "";
-        ArrayList<String> emails = new ArrayList<>();
-        int id = 0, iterador = 0, pos = 0;
         boolean encontrado = false;
-        
-        try{
+
+        try {
             rs = conn.ejecutarQuery(query);
-            while(rs.next()){
-               
-               id = rs.getInt("id");
-               nombre = rs.getString("nombre");
-               emailString = rs.getString("email");
-               emails.add(emailString);
-               ciudad = rs.getString("ciudad");
-               telefono = rs.getString("telefono");
-            }
-            while((!encontrado) && (iterador < emails.size())){
-                if(emails.get(iterador).contains(email)){
+            while (rs.next()) {
+                String emailString = rs.getString("email");
+                if (emailString.contains(email)) {
+                    int id = rs.getInt("id");
+                    String nombre = rs.getString("nombre");
+                    String ciudad = rs.getString("ciudad");
+                    String telefono = rs.getString("telefono");
+
+                    System.out.println("id: " + id + "\tnombre: " + nombre + "\temail: " + emailString
+                            + "\tciudad: " + ciudad + "\ttelefono: " + telefono);
                     encontrado = true;
-                    pos = iterador;
+                    break;
                 }
             }
-        }
-        catch(SQLException sqle){
+        } catch (SQLException sqle) {
             System.err.println("Se ha producido un error en la busqueda");
         }
-        
-        if(pos != 0){
-            System.out.println("id: " + id + "\tnombre: " + nombre + "\temail: " + email + "\tciudad: " + ciudad + "\ttelefono: " + telefono);
-        }
-        else{
+        if (!encontrado) {
             System.out.println("No se ha encontrado ningun cliente con email coincidente con el introducido");
         }
     }
+
     
     public static void eliminarCliente(Conexion conn, String email) {
         String query = "SELECT email FROM cliente;";
@@ -282,8 +297,9 @@ public class GestionCliente {
         System.out.println("");
         System.out.println("");
         System.out.println("1. Modificar nombre");
-        System.out.println("2. Modificar ");
-        System.out.println("3. Modificar nombre");
+        System.out.println("2. Modificar ciudad");
+        System.out.println("3. Modificar telefono");
+        System.out.println("4. Salir");
         System.out.println("Elija una opcion");
         opcion = scanner.nextInt();
         System.out.println("");
