@@ -173,18 +173,12 @@ public class GestionCliente {
     }
     
     public static void anadirCliente(Conexion conn, Cliente cliente) {
-        String query = "SELECT email FROM cliente;";
+        String query = "SELECT email FROM cliente WHERE email = " + "'" + cliente.getEmail() + "';";
         ResultSet rs;
-        String emailString = "";
-        ArrayList<String> emails = new ArrayList<>();
         
         try{
             rs = conn.ejecutarQuery(query);
-            while(rs.next()){
-                emailString = rs.getString("email");
-                emails.add(emailString);
-            }
-            if(!containsIgnoreCase(emails,cliente.getEmail())){
+            if(!rs.next()){
                 String executeQuery = "INSERT INTO `cliente` (`nombre`, `email`, `ciudad`, `telefono`) VALUES "
                                       + "('" + cliente.getNombre() + "', '" + cliente.getEmail() + "', '" + cliente.getCiudad() + "', '" + cliente.getTelefono() + "');";
                 try{
@@ -204,31 +198,22 @@ public class GestionCliente {
     }
     
     public static void buscarPorEmail(Conexion conn, String email) {
-        String query = "SELECT * FROM cliente;";
+        String query = "SELECT * FROM cliente WHERE email LIKE '%" + email + "%'";
         ResultSet rs;
-        boolean encontrado = false;
 
         try {
             rs = conn.ejecutarQuery(query);
-            while (rs.next()) {
-                String emailString = rs.getString("email");
-                if (emailString.contains(email)) {
-                    int id = rs.getInt("id");
-                    String nombre = rs.getString("nombre");
-                    String ciudad = rs.getString("ciudad");
-                    String telefono = rs.getString("telefono");
-
-                    System.out.println("id: " + id + "\tnombre: " + nombre + "\temail: " + emailString
-                            + "\tciudad: " + ciudad + "\ttelefono: " + telefono);
-                    encontrado = true;
-                    break;
-                }
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String emailC = rs.getString("email");
+                String ciudad = rs.getString("ciudad");
+                String telefono = rs.getString("telefono");
+                
+                System.out.println("id: " + id + "\tnombre: " + nombre + "\temail: " + emailC + "\tciudad: " + ciudad + "\ttelefono: " + telefono);
             }
         } catch (SQLException sqle) {
             System.err.println("Se ha producido un error en la busqueda");
-        }
-        if (!encontrado) {
-            System.out.println("No se ha encontrado ningun cliente con email coincidente con el introducido");
         }
     }
 

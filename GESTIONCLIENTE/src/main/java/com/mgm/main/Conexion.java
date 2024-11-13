@@ -28,9 +28,9 @@ public class Conexion {
         return rs;
     }
     
-    public void ejecutar(String sql) throws SQLException{
+    public int ejecutar(String sql) throws SQLException{
         Statement stmt = conn.createStatement();
-        stmt.execute(sql);
+        return stmt.executeUpdate(sql);
     }
     
     public void cerrarConexion() throws SQLException{
