@@ -1,5 +1,5 @@
 
-package com.mgm;
+package com.mgm.main;
 
 public class Cliente {
     private int id = 0;

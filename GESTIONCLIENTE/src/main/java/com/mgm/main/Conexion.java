@@ -1,4 +1,4 @@
-package com.mgm;
+package com.mgm.main;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +20,7 @@ public class Conexion {
     }
 
     public int ejecutar(String sql) throws SQLException{
-        Statement stmt = conn.createStatement();
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
         int filasAfectadas = stmt.executeUpdate(sql);
         return filasAfectadas;
     }

@@ -1,7 +1,8 @@
-package com.mgm;
+package com.mgm.main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GestionCliente {
@@ -63,6 +64,12 @@ public class GestionCliente {
             }
        }
        while(opcion != 10);
+       try{
+           conexion.cerrarConexion();
+       }
+       catch(SQLException sqle){
+           System.err.println("Se ha producido un error al cerrar la conexion con la base de datos");
+       }
     }
 
     public static void listarClientes(Conexion conn) {
@@ -111,7 +118,6 @@ public class GestionCliente {
         else{
             System.out.println("Lo sentimos, ya existe un cliente registrado con ese correo");
         }
-        scanner.close();
     }
 
     public static void buscarPorEmail(Conexion conn) {
@@ -124,7 +130,8 @@ public class GestionCliente {
 
         try {
             rs = conn.ejecutarQuery(query);
-            while(existing = rs.next()){
+            while(rs.next()){
+                existing = true;
                 int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
                 String emailC = rs.getString("email");
@@ -140,7 +147,6 @@ public class GestionCliente {
         if(!existing){
             System.out.println("No se ha encontrado ninguna coincidencia");
         }
-        scanner.close();
     }
 
     public static void modificarCliente(Conexion conn){
@@ -204,7 +210,6 @@ public class GestionCliente {
         else{
             System.out.println("No se ha encontrado ninguna coincidencia, no se ha modificado nada");
         }
-        scanner.close();
     }
 
     public static void eliminarCliente(Conexion conn) {
@@ -235,7 +240,6 @@ public class GestionCliente {
         else{
             System.out.println("No se ha encontrado ninguna coincidencia, no se ha borrado nada");
         }
-        scanner.close();
     }
 
     public static void rankingClientes(Conexion conn) {
@@ -285,7 +289,7 @@ public class GestionCliente {
 
         System.out.println("Introduce la fecha en que se hizo el pedido {AAAA-MM-DD}");
         fecha = scanner.nextLine();
-        System.out.println("Introduce el gasto al que asciende el pedido");
+        System.out.println("Introduce el gasto al que asciende el pedido {12.5, se utiliza el punto}");
         precio = scanner.nextLine();
 
         try{
@@ -308,7 +312,6 @@ public class GestionCliente {
         if(filasAfectadas > 0){
             System.out.println("Se ha añadido correctamente el pedido");
         }
-        scanner.close();
     }
 
     public static void modificarPedido(Conexion conn) {
@@ -383,7 +386,6 @@ public class GestionCliente {
         else{
             System.out.println("No se ha encontrado ninguna coincidencia, no se ha borrado nada");
         }
-        scanner.close();
     }
 
     public static boolean checkEmail(Conexion conn, String email) {
@@ -442,7 +444,6 @@ public class GestionCliente {
         opcion = scanner.nextInt();
         System.out.println("");
         System.out.println("");
-        scanner.close();
         
         return opcion;
     }
