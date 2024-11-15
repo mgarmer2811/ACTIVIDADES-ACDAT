@@ -1,24 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mgm.main;
 
-/**
- *
- * @author Usuario14
- */
+package com.mgm;
+
 public class Cliente {
+    private int id = 0;
     private String nombre;
     private String email;
     private String ciudad;
     private String telefono;
     
-    public Cliente(String nombre, String email, String ciudad, String telefono){
+    public Cliente(){}
+    
+    public Cliente(int id, String nombre, String email, String ciudad, String telefono){
+        this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.ciudad = ciudad;
         this.telefono = telefono;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNombre() {
@@ -52,4 +53,10 @@ public class Cliente {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    @Override
+    public String toString() {
+        return "id: " + id + "\tnombre: " + nombre + "\temail: " + email + "\tciudad: " + ciudad + "\ttelefono: " + telefono;
+    }
 }
+
