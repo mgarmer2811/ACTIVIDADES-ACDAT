@@ -58,12 +58,20 @@ public class GestionCliente {
                     eliminarPedido(conexion);
                     break;
                 }
+                case 10:{
+                    iniciarSesion(conexion);
+                    break;
+                }
+                case 11:{
+                    cambiarContrasena(conexion);
+                    break;
+                }
                 default:{
                     System.out.println("Has salido del programa");
                 }
             }
        }
-       while(opcion != 10);
+       while(opcion != 12);
        try{
            conexion.cerrarConexion();
        }
@@ -77,6 +85,12 @@ public class GestionCliente {
         ResultSet rs;
         try{
             rs = conn.ejecutarQuery(query);
+            
+            rs.last();
+            int numClientes = rs.getRow(); // Numero de columna final (cantidad clientes)
+            rs.beforeFirst();
+            
+            System.out.println("Hay " + numClientes + " clientes:");
             while(rs.next()){
                 int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
@@ -387,6 +401,57 @@ public class GestionCliente {
             System.out.println("No se ha encontrado ninguna coincidencia, no se ha borrado nada");
         }
     }
+    
+    public static void iniciarSesion(Conexion conn) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Introduzca email");
+        String email = scanner.nextLine();
+        System.out.println("Introduzca contraseña");
+        String contrasena = scanner.nextLine();
+        boolean existing = false;
+        
+        if(checkEmail(conn,email)){
+            String sql = "SELECT * FROM cliente WHERE email = '" + email + "' AND contrasena = '" + contrasena + "';";
+            try{
+                ResultSet rs = conn.ejecutarQuery(sql);
+                if(rs.next()){
+                    existing = true;
+                    String nombre = rs.getString("nombre");
+                    System.out.println("Hola " + nombre);
+                }
+            }
+            catch(SQLException sqle){
+                System.err.println("Se ha producido un error ejecutando la query");
+            }
+        }
+        if(!existing){
+            System.out.println("Usuario o contraseña erroneo");
+        }
+    }
+    
+    public static void cambiarContrasena(Conexion conn) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Introduzca el email");
+        String email = scanner.nextLine();
+        System.out.println("Introduzca la nueva contraseña");
+        String nuevaContrasena = scanner.nextLine();
+        
+        if(checkEmail(conn,email)){
+            String sql = "UPDATE cliente SET contrasena = '" + nuevaContrasena + "' WHERE email = '" + email + "';";
+            try{
+                int filasAfectadas = conn.ejecutar(sql);
+                if(filasAfectadas > 0){
+                    System.out.println("Se ha modificado la contraseña correctamente");
+                }
+            }
+            catch(SQLException slqe){
+                System.err.println("Se ha producido un error actualizando la contraseña");
+            }
+        }
+        else{
+            System.out.println("Usuario no encontrado");
+        }
+    }
 
     public static boolean checkEmail(Conexion conn, String email) {
         String sql = "SELECT email FROM cliente WHERE email = '" +  email + "'";
@@ -439,7 +504,9 @@ public class GestionCliente {
         System.out.println("7. Añadir un pedido");
         System.out.println("8. Actualizar datos de un pedido");
         System.out.println("9. Borrar datos de un pedido");
-        System.out.println("10. Salir");
+        System.out.println("10. Iniciar Sesion");
+        System.out.println("11. Borrar datos de un pedido");
+        System.out.println("12. Salir");
         System.out.println("Elija una opcion");
         opcion = scanner.nextInt();
         System.out.println("");
