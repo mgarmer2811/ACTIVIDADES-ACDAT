@@ -47,6 +47,38 @@ public class PeliculaDAO {
         return peliculas;
     }
     
+    public static ArrayList<Pelicula> searchByTitle(String fragmento){
+        ArrayList<Pelicula> peliculas = new ArrayList<>();
+        ResultSet rs;
+        String sql = "SELECT * FROM pelicula WHERE titulo LIKE ?;";
+        
+        try{
+            PreparedStatement stmt = conexion.prepareStatement(sql);
+            stmt.setString(1, "%" + fragmento + "%");
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String titulo = rs.getString("titulo");
+                String director = rs.getString("director");
+                int anyo = rs.getInt("anyo");
+                String genero = rs.getString("genero");
+
+                Pelicula pelicula = new Pelicula(id, titulo, director, anyo, genero);
+                peliculas.add(pelicula);
+            }
+        }
+        catch(SQLException sqle){
+            System.err.println("Se ha producido un error buscando la(s) peliculas");
+        }
+        
+        return peliculas;
+    }
+    
+    public static ArrayList<Pelicula> searchByYear(int anyo){
+        
+    }
+    
     public static int addPelicula(Pelicula pelicula){
         int filasAfectadas = ERROR_CODE;
         String sql = "INSERT INTO pelicula (titulo,director,anyo,genero) VALUES (?,?,?,?);";
