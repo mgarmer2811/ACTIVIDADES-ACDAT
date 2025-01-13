@@ -245,7 +245,7 @@ public class AutorDao {
                 return;
             }
 
-            String sqlDeleteLibros = "DELETE FROM libro WHERE autor_id = ?";
+            String sqlDeleteLibros = "DELETE FROM libro WHERE id_autor = ?";
             PreparedStatement pDeleteLibros = Conexion.getPreparedStatement(sqlDeleteLibros);
             pDeleteLibros.setInt(1, idAutor);
             int filasAfectadasLibros = pDeleteLibros.executeUpdate();

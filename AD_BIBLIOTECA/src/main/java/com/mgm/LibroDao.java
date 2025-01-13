@@ -79,8 +79,6 @@ public class LibroDao {
         
         System.out.println("Introduzca el título del libro:");
         String titulo = scanner.nextLine();
-        System.out.println("Introduzca el autor del libro:");
-        String autor = scanner.nextLine();
         System.out.println("Introduzca la fecha de publicación del libro (aaaa-mm-dd):");
         String fechaPublicacion = scanner.nextLine();
         System.out.println("Introduzca el género del libro:");
@@ -94,6 +92,16 @@ public class LibroDao {
         scanner.nextLine();
         
         try {
+            String sqlSelectAutor = "SELECT * FROM autor WHERE id = ?;";
+            PreparedStatement pSelectAutor = Conexion.getPreparedStatement(sqlSelectAutor);
+            pSelectAutor.setInt(1, idAutor);
+            ResultSet rsSelectAutor = pSelectAutor.executeQuery();
+            
+            if(!rsSelectAutor.next()){
+                System.err.println("El autor con el ID proporcionado no existe en el sistema");
+                return;
+            }
+            
             String sqlSelect = "SELECT * FROM libro WHERE titulo = ? AND id_autor = ?;";
             PreparedStatement pSelect = Conexion.getPreparedStatement(sqlSelect);
             pSelect.setString(1, titulo);
@@ -101,14 +109,13 @@ public class LibroDao {
             ResultSet rsSelect = pSelect.executeQuery();
             
             if (!rsSelect.next()) {
-                String sqlInsert = "INSERT INTO libro(titulo, autor, fecha_publicacion, genero, editorial, id_autorf) VALUES(?,?,?,?,?,?)";
+                String sqlInsert = "INSERT INTO libro(titulo, fecha_publicacion, genero, editorial, id_autor) VALUES(?,?,?,?,?)";
                 PreparedStatement pInsert = Conexion.getPreparedStatement(sqlInsert);
                 pInsert.setString(1, titulo);
-                pInsert.setString(2, autor);
-                pInsert.setString(3, fechaPublicacion);
-                pInsert.setString(4, genero);
-                pInsert.setString(5, editorial);
-                pInsert.setInt(6, idAutor);
+                pInsert.setString(2, fechaPublicacion);
+                pInsert.setString(3, genero);
+                pInsert.setString(4, editorial);
+                pInsert.setInt(5, idAutor);
                 
                 int filasAfectadas = pInsert.executeUpdate();
                 if (filasAfectadas < 1) {
@@ -142,15 +149,29 @@ public class LibroDao {
             }
 
             String tituloActual = rsSelect.getString("titulo");
-            String autorActual = rsSelect.getString("autor");
+            int autorActual = rsSelect.getInt("id_autor");
             String fechaPublicacionActual = rsSelect.getString("fecha_publicacion");
             String generoActual = rsSelect.getString("genero");
             String editorialActual = rsSelect.getString("editorial");
 
             System.out.println("Introduzca el nuevo título del libro (deje en blanco para no modificar):");
             String titulo = scanner.nextLine();
-            System.out.println("Introduzca el nuevo autor del libro (deje en blanco para no modificar):");
-            String autor = scanner.nextLine();
+            System.out.println("Introduzca el ID del nuevo autor del libro (deje en blanco para no modificar):");
+            int autor = scanner.nextInt();
+            scanner.nextLine();
+            
+            if(autor != autorActual){
+                String sqlSelectAutorExiste = "SELECT * FROM autor WHERE id = ?;";
+                PreparedStatement pSelectAutorExiste = Conexion.getPreparedStatement(sqlSelectAutorExiste);
+                pSelectAutorExiste.setInt(1, autor);
+                ResultSet rsSelectAutorExiste = pSelectAutorExiste.executeQuery();
+                
+                if (!rsSelectAutorExiste.next()) {
+                    System.err.println("El autor con el ID proporcionado no existe en el sistema");
+                    return;
+                }
+            }
+            
             System.out.println("Introduzca la nueva fecha de publicación del libro (aaaa-mm-dd, deje en blanco para no modificar):");
             String fechaPublicacion = scanner.nextLine();
             System.out.println("Introduzca el nuevo género del libro (deje en blanco para no modificar):");
@@ -163,13 +184,6 @@ public class LibroDao {
 
             if (!titulo.isBlank() && !titulo.equals(tituloActual)) {
                 sqlUpdate.append("titulo = ? ");
-                faltaComa = true;
-            }
-            if (!autor.isBlank() && !autor.equals(autorActual)) {
-                if (faltaComa) {
-                    sqlUpdate.append(", ");
-                }
-                sqlUpdate.append("autor = ? ");
                 faltaComa = true;
             }
             if (!fechaPublicacion.isBlank() && !fechaPublicacion.equals(fechaPublicacionActual)) {
@@ -205,9 +219,6 @@ public class LibroDao {
 
             if (!titulo.isBlank() && !titulo.equals(tituloActual)) {
                 pUpdate.setString(indice++, titulo);
-            }
-            if (!autor.isBlank() && !autor.equals(autorActual)) {
-                pUpdate.setString(indice++, autor);
             }
             if (!fechaPublicacion.isBlank() && !fechaPublicacion.equals(fechaPublicacionActual)) {
                 pUpdate.setString(indice++, fechaPublicacion);
