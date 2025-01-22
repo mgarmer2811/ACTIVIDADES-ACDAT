@@ -25,11 +25,11 @@ public class Main {
                     break;
                 }
                 case 3:{
-                    Controller.listarLibros();
+                    //Controller.listarLibros();
                     break;
                 }
                 case 4:{
-                    Controller.listarLibrosID();
+                    //Controller.listarLibrosID();
                     break;
                 }
                 case 5:{
@@ -37,7 +37,7 @@ public class Main {
                     break;
                 }
                 case 6:{
-                    Controller.agregarLibro();
+                    //Controller.agregarLibro();
                      break;
                 }
                 case 7:{
@@ -45,7 +45,7 @@ public class Main {
                     break;
                 }
                 case 8:{
-                    Controller.actualizarLibro();
+                    //Controller.actualizarLibro();
                     break;
                     
                 }
@@ -54,7 +54,7 @@ public class Main {
                     break;
                 }
                 case 10:{
-                    Controller.eliminarLibro();
+                    //Controller.eliminarLibro();
                     break;
                 }
                 default:{

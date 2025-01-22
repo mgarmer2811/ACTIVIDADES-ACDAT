@@ -4,8 +4,8 @@
  */
 package com.mgm;
 
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
 
 /**
  *
@@ -35,7 +35,7 @@ public class Controller {
     }
     
     public static void listarAutores(){
-        ArrayList<Autor> autores = AutorDao.getAutores();
+        List<Autor> autores = AutorDao.getAutores();
         for(Autor autor : autores){
             System.out.println(autor.toString());
         }
@@ -50,43 +50,47 @@ public class Controller {
         System.out.println(autor.toString());
     }
     
-    public static void listarLibros(){
-        ArrayList<Libro> libros = LibroDao.getLibros();
-        for(Libro libro : libros){
-            System.out.println(libro.toString());
-        }
-    }
+//    public static void listarLibros(){
+//        List<Libro> libros = LibroDao.getLibros();
+//        for(Libro libro : libros){
+//            System.out.println(libro.toString());
+//        }
+//    }
     
-    public static void listarLibrosID(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Introduzca el id del libro");
-        int id = scanner.nextInt();
-        
-        Libro libro = LibroDao.getLibro(id);
-        System.out.println(libro.toString());
-    }
+//    public static void listarLibrosID(){
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.println("Introduzca el id del libro");
+//        int id = scanner.nextInt();
+//        
+//        Libro libro = LibroDao.getLibro(id);
+//        System.out.println(libro.toString());
+//    }
     
     public static void agregarAutor(){
         AutorDao.addAutor();
     }
     
-    public static void agregarLibro(){
-        LibroDao.addLibro();
-    }
+//    public static void agregarLibro(){
+//        LibroDao.addLibro();
+//    }
     
     public static void actualizarAutor(){
         AutorDao.updateAutor();
     }
     
-    public static void actualizarLibro(){
-        LibroDao.updateLibro();
-    }
+//    public static void actualizarLibro(){
+//        LibroDao.updateLibro();
+//    }
     
     public static void eliminarAutor(){
         AutorDao.deleteAutor();
     }
     
-    public static void eliminarLibro(){
-        LibroDao.deleteLibro();
+//    public static void eliminarLibro(){
+//        LibroDao.deleteLibro();
+//    }
+    
+    public static void close(){
+        Conexion.close();
     }
 }

@@ -4,23 +4,40 @@
  */
 package com.mgm;
 
+import jakarta.persistence.*;
+
 /**
  *
  * @author Usuario14
  */
+@Entity
+@Table(name = "autor")
 public class Autor {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    
+    @Column(name = "nombre")
     private String nombre;
+    
+    @Column(name = "fecha_nacimiento")
     private String fechaNacimiento;
+    
+    @Column(name = "nacionalidad")
     private String nacionalidad;
+    
+    @Column(name = "numero_obras")
     private int numeroObras;
+    
+    @Column(name = "biografia")
     private String biografia;
 
     public Autor() {
     }
 
-    public Autor(int id, String nombre, String fechaNacimiento, String nacionalidad, int numeroObras, String biografia) {
-        this.id = id;
+    public Autor(String nombre, String fechaNacimiento, String nacionalidad, int numeroObras, String biografia) {
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
         this.nacionalidad = nacionalidad;

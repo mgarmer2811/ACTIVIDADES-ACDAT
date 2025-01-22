@@ -7,8 +7,10 @@ package com.mgm;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -16,59 +18,16 @@ import java.util.Scanner;
  */
 public class AutorDao {
     
-    public static ArrayList<Autor> getAutores(){
-        ArrayList<Autor> autores = new ArrayList<>();
-        
-        try{
-            String sqlSelect = "SELECT * FROM autor;";
-            PreparedStatement pSelect = Conexion.getPreparedStatement(sqlSelect);
-            ResultSet rsSelect = pSelect.executeQuery();
-            while(rsSelect.next()){
-                int id = rsSelect.getInt("id");
-                String nombre = rsSelect.getString("nombre");
-                String fechaNacimiento = rsSelect.getString("fecha_nacimiento");
-                String nacionalidad = rsSelect.getString("nacionalidad");
-                int numeroObras = rsSelect.getInt("numero_obras");
-                String biografia = rsSelect.getString("biografia");
-                
-                Autor autor = new Autor(id,nombre,fechaNacimiento,nacionalidad,numeroObras,biografia);
-                autores.add(autor);
-            }
-        }
-        catch(SQLException sqle){
-            System.err.println("Ha ocurrido un error\n" + sqle.getMessage());
-        }
+    public static List<Autor> getAutores(){
+        Session session = Conexion.getSession();
+        List<Autor> autores = session.createQuery("SELECT a FROM Autor AS a",Autor.class).getResultList();
         return autores;
     }
     
     public static Autor getAutor(int id){
         Autor autor = new Autor();
-        
-        try{
-            String sqlSelect = "SELECT * FROM autor WHERE id=?;";
-            PreparedStatement pSelect = Conexion.getPreparedStatement(sqlSelect);
-            pSelect.setInt(1,id);
-            ResultSet rsSelect = pSelect.executeQuery();
-            
-            if(rsSelect.next()){
-                int idAutor = rsSelect.getInt("id");
-                String nombre = rsSelect.getString("nombre");
-                String fechaNacimiento = rsSelect.getString("fecha_nacimiento");
-                String nacionalidad = rsSelect.getString("nacionalidad");
-                int numeroObras = rsSelect.getInt("numero_obras");
-                String biografia = rsSelect.getString("biografia");
-                
-                autor.setId(idAutor);
-                autor.setNombre(nombre);
-                autor.setFechaNacimiento(fechaNacimiento);
-                autor.setNacionalidad(nacionalidad);
-                autor.setNumeroObras(numeroObras);
-                autor.setBiografia(biografia);
-            }
-        }
-        catch(SQLException sqle){
-            System.err.println("Ha ocurrido un error\n" + sqle.getMessage());
-        }
+        Session session = Conexion.getSession();
+        autor = session.createQuery("SELECT a FROM Autor AS a WHERE a.id=" + id,Autor.class).getSingleResult();
         return autor;
     }
     
@@ -87,35 +46,9 @@ public class AutorDao {
         System.out.println("Introduzca una pequeña biografia del autor");
         String biografia = scanner.nextLine();
         
-        try{
-            String sqlSelect = "SELECT * FROM autor WHERE nombre=? AND fecha_nacimiento=? AND nacionalidad=?;";
-            PreparedStatement pSelect = Conexion.getPreparedStatement(sqlSelect);
-            pSelect.setString(1, nombre);
-            pSelect.setString(2, fechaNacimiento);
-            pSelect.setString(3, nacionalidad);
-            ResultSet rsSelect = pSelect.executeQuery();
-            if(!rsSelect.next()){
-                String sqlInsert = "INSERT INTO autor(nombre,fecha_nacimiento,nacionalidad,numero_obras,biografia) VALUES(?,?,?,?,?)";
-                PreparedStatement pInsert = Conexion.getPreparedStatement(sqlInsert);
-                pInsert.setString(1, nombre);
-                pInsert.setString(2, fechaNacimiento);
-                pInsert.setString(3, nacionalidad);
-                pInsert.setInt(4, numeroObras);
-                pInsert.setString(5, biografia);
-                
-                int filasAfectadas = pInsert.executeUpdate();
-                if(filasAfectadas < 1){
-                    throw new SQLException();
-                }
-                System.out.println("El autor ha sido añadido al sistema");
-            }
-            else{
-                throw new SQLException("No se ha añadido el autor porque ya esta en el sistema");
-            }
-        }
-        catch(SQLException sqle){
-            System.err.println("Se ha producido un error\n" + sqle.getMessage());
-        }
+        Autor autor = new Autor(nombre,fechaNacimiento,nacionalidad,numeroObras,biografia);
+        Session session = Conexion.getSession();
+        session.persist(autor);
     }
     
     public static void updateAutor() {
@@ -125,107 +58,65 @@ public class AutorDao {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        try {
-            String sqlSelect = "SELECT * FROM autor WHERE id = ?";
-            PreparedStatement pSelect = Conexion.getPreparedStatement(sqlSelect);
-            pSelect.setInt(1, id);
-            ResultSet rsSelect = pSelect.executeQuery();
+        Session session = Conexion.getSession();
+        Transaction transaction = session.beginTransaction();
 
-            if (!rsSelect.next()) {
+        try {
+            Autor autor = session.get(Autor.class, id);
+
+            if (autor == null) {
                 System.out.println("No se encontró un autor con el ID proporcionado.");
                 return;
             }
-
-            String nombreActual = rsSelect.getString("nombre");
-            String fechaNacimientoActual = rsSelect.getString("fecha_nacimiento");
-            String nacionalidadActual = rsSelect.getString("nacionalidad");
-            int numeroObrasActual = rsSelect.getInt("numero_obras");
-            String biografiaActual = rsSelect.getString("biografia");
             
+            System.out.println("Nombre actual: " + autor.getNombre());
+            System.out.println("Fecha de nacimiento actual: " + autor.getFechaNacimiento());
+            System.out.println("Nacionalidad actual: " + autor.getNacionalidad());
+            System.out.println("Número de obras actual: " + autor.getNumeroObras());
+            System.out.println("Biografía actual: " + autor.getBiografia());
+
             System.out.println("Introduzca el nuevo nombre del autor (deje en blanco para no modificar):");
             String nombre = scanner.nextLine();
+            if (!nombre.isBlank()) {
+                autor.setNombre(nombre);
+            }
+
             System.out.println("Introduzca la nueva fecha de nacimiento del autor (aaaa-mm-dd, deje en blanco para no modificar):");
             String fechaNacimiento = scanner.nextLine();
+            if (!fechaNacimiento.isBlank()) {
+                autor.setFechaNacimiento(fechaNacimiento);
+            }
+
             System.out.println("Introduzca la nueva nacionalidad del autor (deje en blanco para no modificar):");
             String nacionalidad = scanner.nextLine();
+            if (!nacionalidad.isBlank()) {
+                autor.setNacionalidad(nacionalidad);
+            }
+
             System.out.println("Introduzca el nuevo número de obras realizadas por el autor (deje en blanco para no modificar):");
-            int numeroObras = scanner.nextInt();
-            scanner.nextLine();
+            String numeroObrasInput = scanner.nextLine();
+            if (!numeroObrasInput.isBlank()) {
+                autor.setNumeroObras(Integer.parseInt(numeroObrasInput));
+            }
+
             System.out.println("Introduzca la nueva biografía del autor (deje en blanco para no modificar):");
             String biografia = scanner.nextLine();
-
-            StringBuilder sqlUpdate = new StringBuilder("UPDATE autor SET ");
-            boolean faltaComa = false;
-
-            if (!nombre.isBlank() && !nombre.equals(nombreActual)) {
-                sqlUpdate.append("nombre = ?");
-                faltaComa = true;
-            }
-            if (!fechaNacimiento.isBlank() && !fechaNacimiento.equals(fechaNacimientoActual)) {
-                if (faltaComa) {
-                    sqlUpdate.append(", ");
-                }
-                sqlUpdate.append("fecha_nacimiento = ?");
-                faltaComa = true;
-            }
-            if (!nacionalidad.isBlank() && !nacionalidad.equals(nacionalidadActual)) {
-                if (faltaComa) {
-                    sqlUpdate.append(", ");
-                }
-                sqlUpdate.append("nacionalidad = ?");
-                faltaComa = true;
-            }
-            if (numeroObras >= 0 && numeroObras != numeroObrasActual) {
-                if (faltaComa) {
-                    sqlUpdate.append(", ");
-                }
-                sqlUpdate.append("numero_obras = ?");
-                faltaComa = true;
-            }
-            if (!biografia.isBlank() && !biografia.equals(biografiaActual)) {
-                if (faltaComa) {
-                    sqlUpdate.append(", ");
-                }
-                sqlUpdate.append("biografia = ?");
+            if (!biografia.isBlank()) {
+                autor.setBiografia(biografia);
             }
 
-            if (sqlUpdate.length() == "UPDATE autor SET ".length()) {
-                System.out.println("No se ha realizado ningún cambio en el autor.");
-                return;
-            }
+            session.merge(autor);
+            transaction.commit();
 
-            sqlUpdate.append(" WHERE id = ?");
-            PreparedStatement pUpdate = Conexion.getPreparedStatement(sqlUpdate.toString());
-
-            int indice = 1;
-
-            if (!nombre.isBlank() && !nombre.equals(nombreActual)) {
-                pUpdate.setString(indice++, nombre);
-            }
-            if (!fechaNacimiento.isBlank() && !fechaNacimiento.equals(fechaNacimientoActual)) {
-                pUpdate.setString(indice++, fechaNacimiento);
-            }
-            if (!nacionalidad.isBlank() && !nacionalidad.equals(nacionalidadActual)) {
-                pUpdate.setString(indice++, nacionalidad);
-            }
-            if (numeroObras >= 0 && numeroObras != numeroObrasActual) {
-                pUpdate.setInt(indice++, numeroObras);
-            }
-            if (!biografia.isBlank() && !biografia.equals(biografiaActual)) {
-                pUpdate.setString(indice++, biografia);
-            }
-
-            pUpdate.setInt(indice, id);
-
-            int filasAfectadas = pUpdate.executeUpdate();
-            if (filasAfectadas < 1) {
-                throw new SQLException("No se pudo actualizar el autor.");
-            }
             System.out.println("El autor ha sido actualizado correctamente.");
-        } catch (SQLException sqle) {
-            System.err.println("Se ha producido un error\n" + sqle.getMessage());
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.err.println("Se ha producido un error\n" + e.getMessage());
         }
     }
+
     
     public static void deleteAutor() {
         Scanner scanner = new Scanner(System.in);
@@ -234,36 +125,21 @@ public class AutorDao {
         int idAutor = scanner.nextInt();
         scanner.nextLine();
 
-        try {
-            String sqlSelectAutor = "SELECT * FROM autor WHERE id = ?";
-            PreparedStatement pSelectAutor = Conexion.getPreparedStatement(sqlSelectAutor);
-            pSelectAutor.setInt(1, idAutor);
-            ResultSet rsAutor = pSelectAutor.executeQuery();
-
-            if (!rsAutor.next()) {
+        Session session = Conexion.getSession();
+        Transaction transaction = session.beginTransaction();
+        try{
+            Autor autor = session.get(Autor.class, idAutor);
+            if (autor == null) {
                 System.out.println("No se encontró un autor con el ID proporcionado.");
                 return;
             }
-
-            String sqlDeleteLibros = "DELETE FROM libro WHERE id_autor = ?";
-            PreparedStatement pDeleteLibros = Conexion.getPreparedStatement(sqlDeleteLibros);
-            pDeleteLibros.setInt(1, idAutor);
-            int filasAfectadasLibros = pDeleteLibros.executeUpdate();
-            if (filasAfectadasLibros > 0) {
-                System.out.println("Se han eliminado " + filasAfectadasLibros + " libro(s) asociado(s) al autor.");
+            
+            session.remove(autor);
+        }
+        catch(Exception e){
+            if(transaction != null){
+                transaction.rollback();
             }
-
-            String sqlDeleteAutor = "DELETE FROM autor WHERE id = ?";
-            PreparedStatement pDeleteAutor = Conexion.getPreparedStatement(sqlDeleteAutor);
-            pDeleteAutor.setInt(1, idAutor);
-            int filasAfectadas = pDeleteAutor.executeUpdate();
-
-            if (filasAfectadas < 1) {
-                throw new SQLException("No se pudo eliminar el autor.");
-            }
-            System.out.println("El autor ha sido eliminado correctamente.");
-        } catch (SQLException sqle) {
-            System.err.println("Se ha producido un error\n" + sqle.getMessage());
         }
     }
 }
