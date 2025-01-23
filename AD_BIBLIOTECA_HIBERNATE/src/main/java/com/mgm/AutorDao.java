@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mgm;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.Session;
@@ -18,57 +11,93 @@ import org.hibernate.Transaction;
  */
 public class AutorDao {
     
-    public static List<Autor> getAutores(){
-        Session session = Conexion.getSession();
-        List<Autor> autores = session.createQuery("SELECT a FROM Autor AS a",Autor.class).getResultList();
+    public static List<Autor> getAutores() {
+        List<Autor> autores = null;
+        Transaction transaction = null;
+
+        try (Session session = Conexion.getSession()) {
+            transaction = session.beginTransaction();
+            autores = session.createQuery("SELECT a FROM Autor AS a", Autor.class).getResultList();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.err.println("Error al obtener la lista de autores: " + e.getMessage());
+        }
+
         return autores;
     }
-    
-    public static Autor getAutor(int id){
-        Autor autor = new Autor();
-        Session session = Conexion.getSession();
-        autor = session.createQuery("SELECT a FROM Autor AS a WHERE a.id=" + id,Autor.class).getSingleResult();
+
+    public static Autor getAutor(int id) {
+        Autor autor = null;
+        Transaction transaction = null;
+
+        try (Session session = Conexion.getSession()) {
+            transaction = session.beginTransaction();
+            autor = session.createQuery("SELECT a FROM Autor AS a WHERE a.id = :id", Autor.class)
+                           .setParameter("id", id)
+                           .getSingleResult();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.err.println("Error al obtener el autor: " + e.getMessage());
+        }
+
         return autor;
     }
-    
-    public static void addAutor(){
-        
+
+    public static void addAutor() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Introduzca el nombre del autor");
+
+        System.out.println("Introduzca el nombre del autor:");
         String nombre = scanner.nextLine();
-        System.out.println("Introduzca la fecha de nacimiento del autor (aaaa-mm-dd)");
+        System.out.println("Introduzca la fecha de nacimiento del autor (aaaa-mm-dd):");
         String fechaNacimiento = scanner.nextLine();
-        System.out.println("Introduzca la nacionalidad del autor");
+        System.out.println("Introduzca la nacionalidad del autor:");
         String nacionalidad = scanner.nextLine();
-        System.out.println("Introduzca el numero de obras que ha realizado el autor");
+        System.out.println("Introduzca el número de obras que ha realizado el autor:");
         int numeroObras = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Introduzca una pequeña biografia del autor");
+        scanner.nextLine(); // Limpiar buffer
+        System.out.println("Introduzca una pequeña biografía del autor:");
         String biografia = scanner.nextLine();
-        
-        Autor autor = new Autor(nombre,fechaNacimiento,nacionalidad,numeroObras,biografia);
-        Session session = Conexion.getSession();
-        session.persist(autor);
+
+        Autor autor = new Autor(nombre, fechaNacimiento, nacionalidad, numeroObras, biografia);
+        Transaction transaction = null;
+
+        try (Session session = Conexion.getSession()) {
+            transaction = session.beginTransaction();
+            session.persist(autor);
+            transaction.commit();
+            System.out.println("Autor agregado correctamente.");
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.err.println("Error al agregar el autor: " + e.getMessage());
+        }
     }
-    
+
     public static void updateAutor() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Introduzca el ID del autor que desea actualizar:");
         int id = scanner.nextInt();
-        scanner.nextLine();
+        scanner.nextLine(); // Limpiar buffer
 
-        Session session = Conexion.getSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction = null;
 
-        try {
+        try (Session session = Conexion.getSession()) {
+            transaction = session.beginTransaction();
             Autor autor = session.get(Autor.class, id);
 
             if (autor == null) {
                 System.out.println("No se encontró un autor con el ID proporcionado.");
                 return;
             }
-            
+
             System.out.println("Nombre actual: " + autor.getNombre());
             System.out.println("Fecha de nacimiento actual: " + autor.getFechaNacimiento());
             System.out.println("Nacionalidad actual: " + autor.getNacionalidad());
@@ -107,39 +136,41 @@ public class AutorDao {
 
             session.merge(autor);
             transaction.commit();
-
             System.out.println("El autor ha sido actualizado correctamente.");
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            System.err.println("Se ha producido un error\n" + e.getMessage());
+            System.err.println("Error al actualizar el autor: " + e.getMessage());
         }
     }
 
-    
     public static void deleteAutor() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Introduzca el ID del autor que desea eliminar:");
         int idAutor = scanner.nextInt();
-        scanner.nextLine();
+        scanner.nextLine(); // Limpiar buffer
 
-        Session session = Conexion.getSession();
-        Transaction transaction = session.beginTransaction();
-        try{
+        Transaction transaction = null;
+
+        try (Session session = Conexion.getSession()) {
+            transaction = session.beginTransaction();
             Autor autor = session.get(Autor.class, idAutor);
+
             if (autor == null) {
                 System.out.println("No se encontró un autor con el ID proporcionado.");
                 return;
             }
-            
+
             session.remove(autor);
-        }
-        catch(Exception e){
-            if(transaction != null){
+            transaction.commit();
+            System.out.println("El autor ha sido eliminado correctamente.");
+        } catch (Exception e) {
+            if (transaction != null) {
                 transaction.rollback();
             }
+            System.err.println("Error al eliminar el autor: " + e.getMessage());
         }
     }
 }

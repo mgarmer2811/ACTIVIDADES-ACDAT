@@ -5,6 +5,8 @@
 package com.mgm;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,6 +32,9 @@ public class Autor {
     
     @Column(name = "numero_obras")
     private int numeroObras;
+    
+    @OneToMany(mappedBy = "Libro")
+    private List<Libro> libros = new ArrayList<>();
     
     @Column(name = "biografia")
     private String biografia;
@@ -91,6 +96,14 @@ public class Autor {
 
     public void setBiografia(String biografia) {
         this.biografia = biografia;
+    }
+    
+    public List<Libro> getLibros() {
+        return libros;
+    }
+
+    public void setLibros(List<Libro> libros) {
+        this.libros = libros;
     }
 
     @Override

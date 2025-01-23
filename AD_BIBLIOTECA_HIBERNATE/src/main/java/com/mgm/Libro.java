@@ -4,30 +4,50 @@
  */
 package com.mgm;
 
+import jakarta.persistence.*;
 /**
  *
  * @author Usuario14
  */
+@Entity
+@Table(name = "libro")
 public class Libro {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    
+    @Column(name = "titulo")
     private String titulo;
+    
+    @Column(name = "fecha_publicacion")
     private String fechaPublicacion;
+    
+    @Column(name = "genero")
     private String genero;
+    
+    @Column(name = "isbn")
     private String isbn;
+    
+    @Column(name = "editorial")
     private String editorial;
-    private int idAutor;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_autor", referencedColumnName = "id")
+    private Autor autor;
 
     public Libro() {
     }
 
-    public Libro(int id, String titulo, String fechaPublicacion, String genero, String isbn, String editorial, int idAutor) {
+    public Libro(int id, String titulo, String fechaPublicacion, String genero, String isbn, String editorial, Autor autor) {
         this.id = id;
         this.titulo = titulo;
         this.fechaPublicacion = fechaPublicacion;
         this.genero = genero;
         this.isbn = isbn;
         this.editorial = editorial;
-        this.idAutor = idAutor;
+        this.autor = autor;
     }
 
     public int getId() {
@@ -78,12 +98,12 @@ public class Libro {
         this.editorial = editorial;
     }
 
-    public int getIdAutor() {
-        return idAutor;
+    public Autor getAutor() {
+        return autor;
     }
 
-    public void setIdAutor(int idAutor) {
-        this.idAutor = idAutor;
+    public void setAutor(Autor autor) {
+        this.autor = autor;
     }
 
     @Override
@@ -95,7 +115,7 @@ public class Libro {
                 ", genero='" + genero + '\'' +
                 ", isbn='" + isbn + '\'' +
                 ", editorial='" + editorial + '\'' +
-                ", idAutor=" + idAutor +
+                ", idAutor=" + autor.getId() + 
                 '}';
     }
 }
