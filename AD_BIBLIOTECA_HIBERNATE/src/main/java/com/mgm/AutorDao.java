@@ -85,7 +85,7 @@ public class AutorDao {
 
         System.out.println("Introduzca el ID del autor que desea actualizar:");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
 
         Transaction transaction = null;
 
@@ -150,7 +150,7 @@ public class AutorDao {
 
         System.out.println("Introduzca el ID del autor que desea eliminar:");
         int idAutor = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
 
         Transaction transaction = null;
 
