@@ -40,8 +40,7 @@ public class Libro {
     public Libro() {
     }
 
-    public Libro(int id, String titulo, String fechaPublicacion, String genero, String isbn, String editorial, Autor autor) {
-        this.id = id;
+    public Libro(String titulo, String fechaPublicacion, String genero, String isbn, String editorial, Autor autor) {
         this.titulo = titulo;
         this.fechaPublicacion = fechaPublicacion;
         this.genero = genero;

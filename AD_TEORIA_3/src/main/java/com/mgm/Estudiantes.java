@@ -5,7 +5,6 @@
 package com.mgm;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,7 +44,7 @@ public class Estudiantes implements Serializable {
     @Column(name = "direccion")
     private String direccion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estudiantes")
-    private Collection<Matriculas> matriculasCollection;
+    private List<Matriculas> matriculasCollection;
 
     public Estudiantes() {
     }
@@ -100,7 +99,7 @@ public class Estudiantes implements Serializable {
         this.direccion = direccion;
     }
 
-    public Collection<Matriculas> getMatriculasCollection() {
+    public List<Matriculas> getMatriculasCollection() {
         return matriculasCollection;
     }
 

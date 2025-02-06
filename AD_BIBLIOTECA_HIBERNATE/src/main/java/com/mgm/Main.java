@@ -4,6 +4,9 @@
 
 package com.mgm;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Usuario14
@@ -11,6 +14,8 @@ package com.mgm;
 public class Main {
 
     public static void main(String[] args) {
+        Logger hibernateLogger = Logger.getLogger("org.hibernate");
+        hibernateLogger.setLevel(Level.SEVERE);
         int option = -1;
         
         do{
@@ -25,11 +30,11 @@ public class Main {
                     break;
                 }
                 case 3:{
-                    //Controller.listarLibros();
+                    Controller.listarLibros();
                     break;
                 }
                 case 4:{
-                    //Controller.listarLibrosID();
+                    Controller.listarLibrosID();
                     break;
                 }
                 case 5:{
@@ -37,15 +42,15 @@ public class Main {
                     break;
                 }
                 case 6:{
-                    //Controller.agregarLibro();
-                     break;
+                    Controller.agregarLibro();
+                    break;
                 }
                 case 7:{
                     Controller.actualizarAutor();
                     break;
                 }
                 case 8:{
-                    //Controller.actualizarLibro();
+                    Controller.actualizarLibro();
                     break;
                     
                 }
@@ -54,7 +59,7 @@ public class Main {
                     break;
                 }
                 case 10:{
-                    //Controller.eliminarLibro();
+                    Controller.eliminarLibro();
                     break;
                 }
                 default:{

@@ -44,7 +44,7 @@ public class Asignaturas implements Serializable {
     @Column(name = "horas")
     private int horas;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "asignaturas")
-    private Collection<Matriculas> matriculasCollection;
+    private List<Matriculas> matriculasCollection;
 
     public Asignaturas() {
     }

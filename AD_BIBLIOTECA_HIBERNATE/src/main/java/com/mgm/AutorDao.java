@@ -49,22 +49,7 @@ public class AutorDao {
         return autor;
     }
 
-    public static void addAutor() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Introduzca el nombre del autor:");
-        String nombre = scanner.nextLine();
-        System.out.println("Introduzca la fecha de nacimiento del autor (aaaa-mm-dd):");
-        String fechaNacimiento = scanner.nextLine();
-        System.out.println("Introduzca la nacionalidad del autor:");
-        String nacionalidad = scanner.nextLine();
-        System.out.println("Introduzca el número de obras que ha realizado el autor:");
-        int numeroObras = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
-        System.out.println("Introduzca una pequeña biografía del autor:");
-        String biografia = scanner.nextLine();
-
-        Autor autor = new Autor(nombre, fechaNacimiento, nacionalidad, numeroObras, biografia);
+    public static void addAutor(Autor autor) {
         Transaction transaction = null;
 
         try (Session session = Conexion.getSession()) {
@@ -80,60 +65,11 @@ public class AutorDao {
         }
     }
 
-    public static void updateAutor() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Introduzca el ID del autor que desea actualizar:");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-
+    public static void updateAutor(Autor autor) {
         Transaction transaction = null;
 
         try (Session session = Conexion.getSession()) {
             transaction = session.beginTransaction();
-            Autor autor = session.get(Autor.class, id);
-
-            if (autor == null) {
-                System.out.println("No se encontró un autor con el ID proporcionado.");
-                return;
-            }
-
-            System.out.println("Nombre actual: " + autor.getNombre());
-            System.out.println("Fecha de nacimiento actual: " + autor.getFechaNacimiento());
-            System.out.println("Nacionalidad actual: " + autor.getNacionalidad());
-            System.out.println("Número de obras actual: " + autor.getNumeroObras());
-            System.out.println("Biografía actual: " + autor.getBiografia());
-
-            System.out.println("Introduzca el nuevo nombre del autor (deje en blanco para no modificar):");
-            String nombre = scanner.nextLine();
-            if (!nombre.isBlank()) {
-                autor.setNombre(nombre);
-            }
-
-            System.out.println("Introduzca la nueva fecha de nacimiento del autor (aaaa-mm-dd, deje en blanco para no modificar):");
-            String fechaNacimiento = scanner.nextLine();
-            if (!fechaNacimiento.isBlank()) {
-                autor.setFechaNacimiento(fechaNacimiento);
-            }
-
-            System.out.println("Introduzca la nueva nacionalidad del autor (deje en blanco para no modificar):");
-            String nacionalidad = scanner.nextLine();
-            if (!nacionalidad.isBlank()) {
-                autor.setNacionalidad(nacionalidad);
-            }
-
-            System.out.println("Introduzca el nuevo número de obras realizadas por el autor (deje en blanco para no modificar):");
-            String numeroObrasInput = scanner.nextLine();
-            if (!numeroObrasInput.isBlank()) {
-                autor.setNumeroObras(Integer.parseInt(numeroObrasInput));
-            }
-
-            System.out.println("Introduzca la nueva biografía del autor (deje en blanco para no modificar):");
-            String biografia = scanner.nextLine();
-            if (!biografia.isBlank()) {
-                autor.setBiografia(biografia);
-            }
-
             session.merge(autor);
             transaction.commit();
             System.out.println("El autor ha sido actualizado correctamente.");
@@ -145,23 +81,11 @@ public class AutorDao {
         }
     }
 
-    public static void deleteAutor() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Introduzca el ID del autor que desea eliminar:");
-        int idAutor = scanner.nextInt();
-        scanner.nextLine();
-
+    public static void deleteAutor(Autor autor) {
         Transaction transaction = null;
 
         try (Session session = Conexion.getSession()) {
             transaction = session.beginTransaction();
-            Autor autor = session.get(Autor.class, idAutor);
-
-            if (autor == null) {
-                System.out.println("No se encontró un autor con el ID proporcionado.");
-                return;
-            }
 
             session.remove(autor);
             transaction.commit();

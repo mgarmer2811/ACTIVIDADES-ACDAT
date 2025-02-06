@@ -1,6 +1,7 @@
 com\mgm\AutorDao.class
-com\mgm\Controller.class
-com\mgm\Libro.class
 com\mgm\Main.class
 com\mgm\Autor.class
 com\mgm\Conexion.class
+com\mgm\LibroDao.class
+com\mgm\Controller.class
+com\mgm\Libro.class

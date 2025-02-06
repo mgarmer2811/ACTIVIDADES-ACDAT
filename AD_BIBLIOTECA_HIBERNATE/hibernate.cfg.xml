@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hibernate-configuration>
     <session-factory>
-  	<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ad_biblioteca</property>
+  	<property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/ad_biblioteca</property>
         <property name="hibernate.connection.username">2dam</property>
         <property name="hibernate.connection.password">2dam</property>
     </session-factory>

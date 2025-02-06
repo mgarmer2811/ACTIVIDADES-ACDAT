@@ -16,6 +16,7 @@ public class Conexion {
         if(configuration == null){
             configuration = new Configuration().configure(new File("hibernate.cfg.xml"));
             configuration.addAnnotatedClass(Autor.class);
+            configuration.addAnnotatedClass(Libro.class);
             sessionFactory = configuration.buildSessionFactory();
         }
     }
@@ -30,6 +31,6 @@ public class Conexion {
     
     public static void close(){
         session.close();
-        sessionFactory.close();
+        //sessionFactory.close();
     }
 }

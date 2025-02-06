@@ -5,7 +5,6 @@
 package com.mgm;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -34,7 +33,7 @@ public class Matriculas implements Serializable {
     @Column(name = "estado")
     private String estado;
     @Column(name = "calificacion")
-    private BigDecimal calificacion;
+    private float calificacion;
     @JoinColumn(name = "id_estudiante", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Estudiantes estudiantes;
@@ -74,11 +73,11 @@ public class Matriculas implements Serializable {
         this.estado = estado;
     }
 
-    public BigDecimal getCalificacion() {
+    public float getCalificacion() {
         return calificacion;
     }
 
-    public void setCalificacion(BigDecimal calificacion) {
+    public void setCalificacion(float calificacion) {
         this.calificacion = calificacion;
     }
 

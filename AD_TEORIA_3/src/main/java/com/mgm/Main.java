@@ -8,7 +8,7 @@ package com.mgm;
  *
  * @author Usuario14
  */
-public class AD_TEORIA_3 {
+public class Main {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
