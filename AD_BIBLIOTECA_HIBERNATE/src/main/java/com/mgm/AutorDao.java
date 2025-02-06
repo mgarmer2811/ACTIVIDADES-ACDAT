@@ -1,7 +1,6 @@
 package com.mgm;
 
 import java.util.List;
-import java.util.Scanner;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -86,7 +85,7 @@ public class AutorDao {
 
         try (Session session = Conexion.getSession()) {
             transaction = session.beginTransaction();
-
+            
             session.remove(autor);
             transaction.commit();
             System.out.println("El autor ha sido eliminado correctamente.");

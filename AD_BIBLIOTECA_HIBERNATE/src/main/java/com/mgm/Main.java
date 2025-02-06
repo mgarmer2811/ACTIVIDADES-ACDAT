@@ -63,6 +63,7 @@ public class Main {
                     break;
                 }
                 default:{
+                    Controller.close();
                     System.out.println("Has salido del programa");
                 }
             }

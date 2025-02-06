@@ -33,7 +33,7 @@ public class Autor {
     @Column(name = "numero_obras")
     private int numeroObras;
     
-    @OneToMany(mappedBy = "autor")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "autor")
     private List<Libro> libros = new ArrayList<>();
     
     @Column(name = "biografia")
