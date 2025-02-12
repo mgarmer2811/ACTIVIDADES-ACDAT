@@ -51,10 +51,8 @@ public class Empleado implements Serializable {
     private float sueldo;
     @Basic(optional = false)
     @Column(name = "fecha_contratacion")
-    @Temporal(TemporalType.DATE)
     private String fechaContratacion;
     @Column(name = "fecha_finalizacion")
-    @Temporal(TemporalType.DATE)
     private String fechaFinalizacion;
     @JoinTable(name = "empleado_proyecto", joinColumns = {
         @JoinColumn(name = "id_empleado", referencedColumnName = "id")}, inverseJoinColumns = {

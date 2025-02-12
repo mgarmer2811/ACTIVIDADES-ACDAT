@@ -5,6 +5,7 @@
 package com.mgm;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,11 +41,9 @@ public class Proyecto implements Serializable {
     private String nombre;
     @Basic(optional = false)
     @Column(name = "fecha_inicio")
-    @Temporal(TemporalType.DATE)
     private String fechaInicio;
     @Basic(optional = false)
     @Column(name = "fecha_fin")
-    @Temporal(TemporalType.DATE)
     private String fechaFin;
     @ManyToMany(mappedBy = "proyectoList")
     private List<Empleado> empleadoList;
@@ -100,5 +99,10 @@ public class Proyecto implements Serializable {
 
     public void setEmpleadoList(List<Empleado> empleadoList) {
         this.empleadoList = empleadoList;
+    }
+
+    @Override
+    public String toString() {
+        return "Proyecto{" + "id=" + id + ", nombre=" + nombre + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
     }
 }
