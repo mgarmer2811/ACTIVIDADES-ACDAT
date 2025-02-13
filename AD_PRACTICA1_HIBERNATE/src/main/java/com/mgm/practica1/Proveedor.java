@@ -105,4 +105,9 @@ public class Proveedor implements Serializable {
     public void setActividadList(List<Actividad> actividadList) {
         this.actividadList = actividadList;
     }
+
+    @Override
+    public String toString() {
+        return "Proveedor{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", cif=" + cif + ", actividadList=" + actividadList + '}';
+    }
 }

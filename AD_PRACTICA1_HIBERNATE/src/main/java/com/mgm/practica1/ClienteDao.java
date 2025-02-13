@@ -1,39 +1,43 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mgm.practica1;
 
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class ProveedorDao {
-    
-    public static Proveedor getProveedorByCif(String cif) {
+/**
+ *
+ * @author Usuario
+ */
+public class ClienteDao {
+    public static Cliente getClienteByEmail(String email){
         Session session = null;
-        Proveedor pro = null;
-
+        Cliente cli = null;
+        
         try {
             session = Conexion.getSession();
-
-            List<Proveedor> proveedor = session.createQuery("SELECT p FROM Proveedor AS p WHERE p.cif = :cif", Proveedor.class)
-                    .setParameter("cif", cif)
+            List <Cliente> cliente = session.createQuery("SELECT c FROM Cliente AS c WHERE c.email = :email",Cliente.class)
+                    .setParameter("email", email)
                     .getResultList();
-
-            if (!proveedor.isEmpty()) {
-                pro = proveedor.get(0);
+            if (!cliente.isEmpty()) {
+                cli = cliente.get(0);
             }
-            return pro;
+            return cli;
         } catch (Exception e) {
-            System.err.println("Error al recuperar proveedor por CIF: " + e.getMessage());
+            System.out.println("Error al recuperar cliente: " + e.getMessage());
             e.printStackTrace();
             return null;
         } finally {
-            if (session != null) {
+            if(session != null) {
                 Conexion.close();
             }
         }
     }
-
     
-    public static Integer anadirProveedor(String nombre, String email, String cif) {
+    public static Integer anadirCliente(String nombre, String email){
         Session session = null;
         Transaction transaction = null;
         Integer id = null;
@@ -42,16 +46,17 @@ public class ProveedorDao {
             session = Conexion.getSession();
             transaction = session.beginTransaction();
             
-            Proveedor pro = new Proveedor(nombre, email, cif);
-            session.persist(pro);
+            Cliente cli = new Cliente(nombre,email);
+            session.persist(cli);
             transaction.commit();
-            id = pro.getId();
+            id = cli.getId();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            System.err.println("Error al añadir un proveedor: " + e.getMessage());
+            System.out.println("Error al anadir cliente: " + e.getMessage());
             e.printStackTrace();
+            return null;
         } finally {
             if (session != null) {
                 Conexion.close();
@@ -60,15 +65,15 @@ public class ProveedorDao {
         return id;
     }
     
-    public static Proveedor getProveedorById(int id) {
+    public static Cliente getClienteById(int id){
         Session session = null;
         try {
             session = Conexion.getSession();
-            Proveedor pro = session.get(Proveedor.class, id);
-            pro.getActividadList().size();
-            return pro;
+            Cliente cli = session.get(Cliente.class,id);
+            cli.getCompraList().size();
+            return cli;
         } catch (Exception e) {
-            System.err.println("Error al recuperar proveedor por ID: " + e.getMessage());
+            System.out.println("Error al recuperar cliente: " + e.getMessage());
             e.printStackTrace();
             return null;
         } finally {
@@ -78,7 +83,7 @@ public class ProveedorDao {
         }
     }
     
-    public static boolean modificarProveedor(int id, String nombre, String email, String cif) {
+    public static boolean modificarCliente(int id, String nombre, String email){
         Session session = null;
         Transaction transaction = null;
         boolean exito = false;
@@ -87,15 +92,15 @@ public class ProveedorDao {
             session = Conexion.getSession();
             transaction = session.beginTransaction();
             
-            Proveedor pro = new Proveedor(id, nombre, email, cif);
-            session.merge(pro);
+            Cliente cli = new Cliente(id,nombre,email);
+            session.merge(cli);
             transaction.commit();
             exito = true;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            System.err.println("Error al modificar un proveedor: " + e.getMessage());
+            System.out.println("Error al modificar cliente: " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (session != null) {
@@ -105,7 +110,7 @@ public class ProveedorDao {
         return exito;
     }
     
-    public static boolean borrarProveedor(int id){
+    public static boolean borrarCliente(int id){
         Session session = null;
         Transaction transaction = null;
         boolean exito = false;
@@ -114,13 +119,12 @@ public class ProveedorDao {
             session = Conexion.getSession();
             transaction = session.beginTransaction();
             
-            Proveedor pro = session.get(Proveedor.class, id);
-            List<Actividad> actividades = session.createQuery("SELECT a FROM Actividad AS a WHERE a.fecha > CURRENT_DATE AND a.proveedor.id = :id",Actividad.class)
-                    .setParameter("id", id)
+            Cliente cli = session.get(Cliente.class, id);
+            List<Actividad> actividades = session.createQuery("SELECT a FROM Actividad AS a WHERE a.fecha > CURRENT_DATE",Actividad.class)
                     .getResultList();
             
-            if (actividades.isEmpty()){
-                session.remove(pro);
+            if (actividades.isEmpty()) {
+                session.remove(cli);
                 exito = true;
             }
             transaction.commit();
@@ -128,7 +132,7 @@ public class ProveedorDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            System.err.println("Error al borrar un proveedor: " + e.getMessage());
+            System.out.println("Error al borrar el cliente: " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (session != null) {
@@ -136,5 +140,24 @@ public class ProveedorDao {
             }
         }
         return exito;
+    }
+    
+    public static List<Cliente> getClientes(){
+        Session session = null;
+        try {
+            session = Conexion.getSession();
+            
+            List<Cliente> clientes = session.createQuery("SELECT c FROM Cliente AS c",Cliente.class)
+                    .getResultList();
+            return clientes;
+        } catch (Exception e) {
+            System.out.println("Error al recuperar clientes: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (session != null) {
+                Conexion.close();
+            }
+        }
     }
 }

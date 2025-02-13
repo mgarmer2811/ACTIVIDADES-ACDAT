@@ -5,6 +5,7 @@
 package com.mgm.practica1;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,7 +52,7 @@ public class Actividad implements Serializable {
     @Basic(optional = false)
     @Column(name = "plazas_disponibles")
     private int plazasDisponibles;
-    @OneToMany(mappedBy = "actividad")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "actividad")
     private List<Compra> compraList;
     @JoinColumn(name = "id_proveedor", referencedColumnName = "id")
     @ManyToOne
@@ -66,6 +67,13 @@ public class Actividad implements Serializable {
 
     public Actividad(Integer id, String nombre, Date fecha, String ubicacion, int plazasDisponibles) {
         this.id = id;
+        this.nombre = nombre;
+        this.fecha = fecha;
+        this.ubicacion = ubicacion;
+        this.plazasDisponibles = plazasDisponibles;
+    }
+    
+    public Actividad(String nombre, Date fecha, String ubicacion, int plazasDisponibles) {
         this.nombre = nombre;
         this.fecha = fecha;
         this.ubicacion = ubicacion;
@@ -126,5 +134,10 @@ public class Actividad implements Serializable {
 
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
+    }
+
+    @Override
+    public String toString() {
+        return id + "|" + nombre + "|" + fecha + "|" + ubicacion + "|" + plazasDisponibles + "|" + proveedor.getNombre();
     }
 }
