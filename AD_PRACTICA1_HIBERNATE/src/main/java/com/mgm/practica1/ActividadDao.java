@@ -107,16 +107,13 @@ public class ActividadDao {
             if ((act.getPlazasDisponibles() > 0) && (act.getFecha().after(new Date()))) {
                 act.setPlazasDisponibles(act.getPlazasDisponibles() - 1);
                 Compra compra = new Compra(new Date());
+                compra.setActividad(act);
+                compra.setCliente(cli);
                 
-                List<Compra> comprasAct = act.getCompraList();
-                comprasAct.add(compra);
-                act.setCompraList(comprasAct);
-                List<Compra> comprasCli = act.getCompraList();
-                comprasCli.add(compra);
-                cli.setCompraList(comprasAct);
-                
-                session.merge(cli);
-                session.merge(act);
+                act.getCompraList().add(compra);
+                cli.getCompraList().add(compra);
+                session.persist(compra);
+                transaction.commit();
                 exito = true;
             }
         } catch (Exception e) {
@@ -146,19 +143,22 @@ public class ActividadDao {
             Cliente cli = session.get(Cliente.class, idCli);
             
             if (!act.getFecha().before(new Date())) {
-                act.setPlazasDisponibles(act.getPlazasDisponibles() + 1);
-                Compra compra = new Compra(cli,act);
+                List<Compra> compra = session.createQuery("SELECT c FROM Compra AS c WHERE c.cliente.id = :cliId AND c.actividad.id = :actId",Compra.class)
+                        .setParameter("cliId", cli.getId())
+                        .setParameter("actId", act.getId())
+                        .getResultList();
                 
-                List<Compra> comprasAct = act.getCompraList();
-                comprasAct.remove(compra);
-                act.setCompraList(comprasAct);
-                List<Compra> comprasCli = cli.getCompraList();
-                comprasCli.remove(compra);
-                cli.setCompraList(comprasCli);
-                
-                session.merge(cli);
-                session.merge(act);
-                exito = true;
+                if (!compra.isEmpty()) {
+                    Compra com = compra.get(0);
+                    act.setPlazasDisponibles(act.getPlazasDisponibles() + 1);
+                    cli.getCompraList().remove(com);
+                    act.getCompraList().remove(com);
+                    session.merge(cli);
+                    session.merge(act);
+                    session.remove(com);
+                    exito = true;
+                }
+                transaction.commit();
             }
         } catch (Exception e) {
             if (transaction != null) {
